@@ -2,7 +2,7 @@
 
 set -e
 
-KEYSTONE_BINS_DIR=${KEYSTONE_DIR}/sdk/rts/eyrie/
+# KEYSTONE_BINS_DIR=./keystone-runtime/
 
 source test_config.sh
 
@@ -24,10 +24,16 @@ cp run_all_tests.sh ${STAGING_OUTPUT_DIR}
 
 cp test_config.sh ${STAGING_OUTPUT_DIR}
 
-KEYSTONE_BINS=" ${EYRIE_FULL_SUPPORT_NAME}"
+# KEYSTONE_BINS=" ${EYRIE_FULL_SUPPORT_NAME}"
 
-for bin in $KEYSTONE_BINS; do
-    cp ${KEYSTONE_BINS_DIR}/${bin} ${STAGING_OUTPUT_DIR}
-done
+# for bin in $KEYSTONE_BINS; do
+#     cp ${KEYSTONE_BINS_DIR}/${bin} ${STAGING_OUTPUT_DIR}
+# done
+
+KEYSTONE_BINS_DIR=/home/yx/Desktop/vf-keystone/keystone/build-starfive/visionfive264/buildroot.build/build/keystone-examples-d39fb079fca59217/hello/
+
+cp ${KEYSTONE_BINS_DIR}/eyrie-rt     ${STAGING_OUTPUT_DIR} -ar
+cp ${KEYSTONE_BINS_DIR}/loader.bin   ${STAGING_OUTPUT_DIR} -ar
+cp ${KEYSTONE_BINS_DIR}/.options_log ${STAGING_OUTPUT_DIR} -ar
 
 cp bench-runner/bench-runner.riscv ${STAGING_OUTPUT_DIR}

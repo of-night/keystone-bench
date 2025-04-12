@@ -7,6 +7,7 @@
 #include "keystone.h"
 #include "edge_call.h"
 #include <getopt.h>
+#include <sys/time.h>
 
 /* This is for asking the loader to use the FU540 physical address
 range belonging to the scratchpad, rather than what the kernel
@@ -73,24 +74,36 @@ int main(int argc, char** argv)
     }
   }
 
-  Keystone enclave;
-  Params params;
+  /* yx */
+  Keystone::Enclave enclave;
+  Keystone::Params params;
   unsigned long cycles1,cycles2,cycles3,cycles4;
+  unsigned long start1, end1, start2, end2;
+  /* yx */
 
   params.setFreeMemSize(freemem_size);
-  params.setUntrustedMem(utm_ptr, untrusted_size);
+  // params.setUntrustedSize(utm_ptr, untrusted_size);
+  params.setUntrustedSize(untrusted_size);
 
 
   if( self_timing ){
-    asm volatile ("rdcycle %0" : "=r" (cycles1));
+    // asm volatile ("rdcycle %0" : "=r" (cycles1));
+      asm volatile ("rdtime %0" : "=r" (start1)); /* yx */
+      printf("Init start yx\r\n"); /* yx */
   }
-  if(SCRATCHPAD_PHYS)
-    enclave.init(eapp_file, rt_file , params, 0x0A000000);
-  else
-    enclave.init(eapp_file, rt_file , params);
+  // if(SCRATCHPAD_PHYS)
+  //   enclave.init(eapp_file, rt_file , params, 0x0A000000);
+  // else
+    enclave.init(eapp_file, rt_file , "loader.bin" , params);
 
   if( self_timing ){
-    asm volatile ("rdcycle %0" : "=r" (cycles2));
+    // asm volatile ("rdcycle %0" : "=r" (cycles2));
+    /* yx */
+      asm volatile ("rdtime %0" : "=r" (end1));
+      printf("Init end yx\r\n");
+      printf("Init time: \r\n");
+      printf("\t test time: %ld\r\n", end1 - start1);
+      /* yx */
   }
 
   enclave.registerOcallDispatch(incoming_call_dispatch);
@@ -105,16 +118,24 @@ int main(int argc, char** argv)
 
 
   if( self_timing ){
-    asm volatile ("rdcycle %0" : "=r" (cycles3));
+    // asm volatile ("rdcycle %0" : "=r" (cycles3));
+      asm volatile ("rdtime %0" : "=r" (start2)); /* yx */
+      printf("Run start yx\r\n"); /* yx */
   }
 
   if( !load_only )
     enclave.run();
 
+    /* yx */
+    asm volatile ("rdtime %0" : "=r" (end2)); /* yx */
+    printf("Run end yx\r\n");
+    printf("Run time:\r\n");
+    printf("\t test time: %ld\r\n", end2 - start2);
+    /* yx */
   if( self_timing ){
-    asm volatile ("rdcycle %0" : "=r" (cycles4));
-    printf("[keystone-bench] Init: %lu cycles\r\n", cycles2-cycles1);
-    printf("[keystone-bench] Runtime: %lu cycles\r\n", cycles4-cycles3);
+    // asm volatile ("rdcycle %0" : "=r" (cycles4));
+    // printf("[keystone-bench] Init: %lu cycles\r\n", cycles2-cycles1);
+    // printf("[keystone-bench] Runtime: %lu cycles\r\n", cycles4-cycles3);
   }
 
   return 0;

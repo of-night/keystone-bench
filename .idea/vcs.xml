@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/beebs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/coremark" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/iozone" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/keystone-runtime" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/rv8-bench" vcs="Git" />
+  </component>
+</project>
